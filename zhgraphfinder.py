@@ -4,7 +4,7 @@
 # pyzabbix is needed, see https://github.com/lukecyca/pyzabbix
 #
 import argparse
-import ConfigParser
+import configparser
 import os
 import os.path
 import sys
@@ -16,15 +16,14 @@ def ConfigSectionMap(section):
     dict1 = {}
     options = Config.options(section)
     for option in options:
- 	try:
-		dict1[option] = Config.get(section, option)
-		if dict1[option] == -1:
-			DebugPrint("skip: %s" % option)
-	except:
-		print("exception on %s!" % option)
-		dict1[option] = None
+        try:
+            dict1[option] = Config.get(section, option)
+            if dict1[option] == -1:
+                DebugPrint("skip: %s" % option)
+        except:
+            print(("exception on %s!" % option))
+            dict1[option] = None
     return dict1
-
 
 # set default vars
 try:
@@ -59,7 +58,7 @@ parser.add_argument('-e', '--extended', help='Return both graphid and graph name
 args = parser.parse_args()
 
 # load config module
-Config = ConfigParser.ConfigParser()
+Config = configparser.ConfigParser()
 Config
 
 # if configuration argument is set, test the config file
@@ -130,16 +129,16 @@ if hosts:
       if args.extended:
         # print graphs ids and graph names
         for graph in graphs:
-	  print(format(graph["graphid"])+":"+format(graph["name"]))
-      else:	  
+            print((format(graph["graphid"])+":"+format(graph["name"])))
+      else:      
         if args.numeric:
           # print graph ids
-	  for graph in graphs:
-	    print(format(graph["graphid"]))
+          for graph in graphs:
+              print((format(graph["graphid"])))
         else:
           # print graph names
-	  for graph in graphs:
-	    print(format(graph["name"]))
+          for graph in graphs:
+              print((format(graph["name"])))
     else:
        sys.exit("Error: No graphs defined on "+ host_name)
 else:

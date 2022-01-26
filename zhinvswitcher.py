@@ -4,7 +4,7 @@
 # pyzabbix is needed, see https://github.com/lukecyca/pyzabbix
 #
 import argparse
-import ConfigParser
+import configparser
 import os
 import os.path
 import sys
@@ -16,15 +16,14 @@ def ConfigSectionMap(section):
     dict1 = {}
     options = Config.options(section)
     for option in options:
- 	try:
-		dict1[option] = Config.get(section, option)
-		if dict1[option] == -1:
-			DebugPrint("skip: %s" % option)
-	except:
-		print("exception on %s!" % option)
-		dict1[option] = None
+        try:
+            dict1[option] = Config.get(section, option)
+            if dict1[option] == -1:
+                DebugPrint("skip: %s" % option)
+        except:
+            print(("exception on %s!" % option))
+            dict1[option] = None
     return dict1
-
 
 # set default vars
 defconf = os.getenv("HOME") + "/.zbx.conf"
@@ -61,7 +60,7 @@ parser.add_argument('-m', '--mode', help='Inventory mode to auto(default), disab
 args = parser.parse_args()
 
 # load config module
-Config = ConfigParser.ConfigParser()
+Config = configparser.ConfigParser()
 Config
 
 # if configuration argument is set, test the config file
@@ -168,9 +167,9 @@ else:
          if not exists:
             sys.exit("Error: Hostid "+hid+" does not exist")
          if not hlookup:
-            hlookup = [{unicode('hostid'): unicode(hid)}]
+            hlookup = [{str('hostid'): str(hid)}]
          else:
-            hlookup.append({unicode('hostid'): unicode(hid)})
+            hlookup.append({str('hostid'): str(hid)})
   
     else:
        # We are using hostnames, let's resolve them to ids.
@@ -198,6 +197,6 @@ if args.extended:
         hostnames = str(hosts[host]['host'])
       else:
         hostnames = hostnames + ", " + str(hosts[host]['host'])
-  print("Inventory mode switched to \"" + args.mode + "\" on: " + hostnames)
+  print(("Inventory mode switched to \"" + args.mode + "\" on: " + hostnames))
   
 # And we're done...

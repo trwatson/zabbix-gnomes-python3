@@ -4,7 +4,7 @@
 # pyzabbix is needed, see https://github.com/lukecyca/pyzabbix
 #
 import argparse
-import ConfigParser
+import configparser
 import os
 import os.path
 import sys
@@ -16,15 +16,14 @@ def ConfigSectionMap(section):
     dict1 = {}
     options = Config.options(section)
     for option in options:
- 	try:
-		dict1[option] = Config.get(section, option)
-		if dict1[option] == -1:
-			DebugPrint("skip: %s" % option)
-	except:
-		print("exception on %s!" % option)
-		dict1[option] = None
+        try:
+            dict1[option] = Config.get(section, option)
+            if dict1[option] == -1:
+                DebugPrint("skip: %s" % option)
+        except:
+            print(("exception on %s!" % option))
+            dict1[option] = None
     return dict1
-
 
 # set default vars
 defconf = os.getenv("HOME") + "/.zbx.conf"
@@ -60,7 +59,7 @@ group2.add_argument('-A', '--active', help='Show only active triggers',action='s
 args = parser.parse_args()
 
 # load config module
-Config = ConfigParser.ConfigParser()
+Config = configparser.ConfigParser()
 Config
 
 # if configuration argument is set, test the config file
@@ -135,17 +134,17 @@ if hosts:
    if triggers:
       if args.extended:
          # print ids and descriptions
-	 for trigger in triggers:
-	   print(format(trigger["triggerid"])+":"+format(trigger["value"])+":"+format(trigger["status"])+":"+format(trigger["state"])+":"+format(trigger["priority"])+":"+format(trigger["description"])+":"+format(trigger["expression"]))
+        for trigger in triggers:
+           print((format(trigger["triggerid"])+":"+format(trigger["value"])+":"+format(trigger["status"])+":"+format(trigger["state"])+":"+format(trigger["priority"])+":"+format(trigger["description"])+":"+format(trigger["expression"])))
       else:
         if args.numeric:
            # print ids
-	   for trigger in triggers:
-	     print(format(trigger["triggerid"]))
+           for trigger in triggers:
+             print((format(trigger["triggerid"])))
         else:
            # print descriptions
-	   for trigger in triggers:
-	     print(format(trigger["description"]))
+           for trigger in triggers:
+             print((format(trigger["description"])))
    else:
        sys.exit("Error: No matching triggers found on "+ host_name)
 else:

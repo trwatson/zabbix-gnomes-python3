@@ -4,7 +4,7 @@
 # pyzabbix is needed, see https://github.com/lukecyca/pyzabbix
 #
 import argparse
-import ConfigParser
+import configparser
 import os
 import os.path
 import sys
@@ -17,18 +17,18 @@ def ConfigSectionMap(section):
     dict1 = {}
     options = Config.options(section)
     for option in options:
- 	try:
-		dict1[option] = Config.get(section, option)
-		if dict1[option] == -1:
-			DebugPrint("skip: %s" % option)
-	except:
-		print("exception on %s!" % option)
-		dict1[option] = None
+        try:
+            dict1[option] = Config.get(section, option)
+            if dict1[option] == -1:
+                DebugPrint("skip: %s" % option)
+        except:
+            print(("exception on %s!" % option))
+            dict1[option] = None
     return dict1
 
 def PrintError(error):
     if args.continue_on_error:
-	sys.stderr.write(error + '\n')
+        sys.stderr.write(error + '\n')
     else:
         sys.exit(error)
 
@@ -65,7 +65,7 @@ parser.add_argument('-C', '--continue-on-error', help='Continue on error, use wi
 args = parser.parse_args()
 
 # load config module
-Config = ConfigParser.ConfigParser()
+Config = configparser.ConfigParser()
 Config
 
 # if configuration argument is set, test the config file
@@ -160,34 +160,34 @@ for template in args.templates:
         try:
             # open file for reading
             with file(template) as f:
-             	xml = f.read()
-            	f.close()
-    	except:
+                xml = f.read()
+                f.close()
+        except:
             # If the file can't be opened, exit with error
-    	    error="Error: Something went wrong when trying to read the file" + template
-	    PrintError(error)
+            error="Error: Something went wrong when trying to read the file" + template
+            PrintError(error)
             Continue=False
 
     if Continue:
-    	try:
+       try:
             # verify if the file is a valid XML        
             tree = ET.fromstring(xml)
-    	except:
+       except:
             # If the file can't isn't a valid XML, exit with error
             error="Error: XML is not valid in " + template
             PrintError(error)
-	    Continue=False
+            Continue=False
 
     if Continue:
         try:
             # Everything looks good, let's try to import
             result=zapi.configuration.Import(format="xml",rules=rules, source=xml)
             if args.verbose:
-                print("Succesfully imported " + template)
+                print(("Succesfully imported " + template))
         except:
             # Something went wrong with the API call or import
             error="Error: Something went wrong while importing " + template + "\n" + str(sys.exc_info()[1][0])
-	    PrintError(error)
+            PrintError(error)
             Continue=False
 
 # And we're done...

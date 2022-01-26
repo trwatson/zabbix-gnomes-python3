@@ -4,12 +4,12 @@
 # pyzabbix is needed, see https://github.com/lukecyca/pyzabbix
 #
 import argparse
-import ConfigParser
+import configparser
 import os
 import os.path
 import sys
 import distutils.util
-import csv, codecs, cStringIO
+import csv, codecs, io
 from pyzabbix import ZabbixAPI
 
 # define config helper function
@@ -17,13 +17,13 @@ def ConfigSectionMap(section):
     dict1 = {}
     options = Config.options(section)
     for option in options:
- 	try:
-		dict1[option] = Config.get(section, option)
-		if dict1[option] == -1:
-			DebugPrint("skip: %s" % option)
-	except:
-		print("exception on %s!" % option)
-		dict1[option] = None
+        try:
+            dict1[option] = Config.get(section, option)
+            if dict1[option] == -1:
+                DebugPrint("skip: %s" % option)
+        except:
+            print(("exception on %s!" % option))
+            dict1[option] = None
     return dict1
 
 class UTF8Recoder:
@@ -36,7 +36,7 @@ class UTF8Recoder:
     def __iter__(self):
         return self
 
-    def next(self):
+    def __next__(self):
         return self.reader.next().encode("utf-8")
 
 class UnicodeReader:
@@ -49,9 +49,9 @@ class UnicodeReader:
         f = UTF8Recoder(f, encoding)
         self.reader = csv.reader(f, dialect=dialect, **kwds)
 
-    def next(self):
-        row = self.reader.next()
-        return [unicode(s, "utf-8") for s in row]
+    def __next__(self):
+        row = next(self.reader)
+        return [str(s, "utf-8") for s in row]
 
     def __iter__(self):
         return self
@@ -64,7 +64,7 @@ class UnicodeWriter:
 
     def __init__(self, f, dialect=csv.excel, encoding="utf-8", **kwds):
         # Redirect output to a queue
-        self.queue = cStringIO.StringIO()
+        self.queue = io.StringIO()
         self.writer = csv.writer(self.queue, dialect=dialect, **kwds)
         self.stream = f
         self.encoder = codecs.getincrementalencoder(encoding)()
@@ -125,7 +125,7 @@ group2.add_argument('-F', '--fields' ,help='A list of inventory fields to return
 args = parser.parse_args()
 
 # load config module
-Config = ConfigParser.ConfigParser()
+Config = configparser.ConfigParser()
 Config
 
 # if configuration argument is set, test the config file
@@ -264,7 +264,7 @@ if not hlookup:
 # Convert hlookup to a usable parameter for host.get
 hostids=[]
 for dict in hlookup:
-    for key, value in dict.iteritems():
+    for key, value in dict.items():
         hostids.append(value)
 
 # Fetch all inventory field data

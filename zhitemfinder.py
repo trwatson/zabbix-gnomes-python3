@@ -4,7 +4,7 @@
 # pyzabbix is needed, see https://github.com/lukecyca/pyzabbix
 #
 import argparse
-import ConfigParser
+import configparser
 import os
 import os.path
 import sys
@@ -16,15 +16,14 @@ def ConfigSectionMap(section):
     dict1 = {}
     options = Config.options(section)
     for option in options:
- 	try:
-		dict1[option] = Config.get(section, option)
-		if dict1[option] == -1:
-			DebugPrint("skip: %s" % option)
-	except:
-		print("exception on %s!" % option)
-		dict1[option] = None
+        try:
+            dict1[option] = Config.get(section, option)
+            if dict1[option] == -1:
+                DebugPrint("skip: %s" % option)
+        except:
+            print(("exception on %s!" % option))
+            dict1[option] = None
     return dict1
-
 
 # set default vars
 defconf = os.getenv("HOME") + "/.zbx.conf"
@@ -61,7 +60,7 @@ group2.add_argument('-E', '--enabled', help='Show only enabled items',action='st
 args = parser.parse_args()
 
 # load config module
-Config = ConfigParser.ConfigParser()
+Config = configparser.ConfigParser()
 Config
 
 # if configuration argument is set, test the config file
@@ -138,17 +137,17 @@ if hosts:
    if items:
       if args.extended:
          # print ids and descriptions
-	 for item in items:
-	   print(format(item["itemid"])+":"+format(item["value_type"])+":"+format(item["status"])+":"+format(item["state"])+":"+format(item["key_"])+":"+format(item["name"]))
+         for item in items:
+             print((format(item["itemid"])+":"+format(item["value_type"])+":"+format(item["status"])+":"+format(item["state"])+":"+format(item["key_"])+":"+format(item["name"])))
       else:
         if args.numeric:
            # print ids
-	   for item in items:
-	     print(format(item["itemid"]))
+           for item in items:
+               print((format(item["itemid"])))
         else:
            # print descriptions
-	   for item in items:
-	     print(format(item["name"]))
+           for item in items:
+               print((format(item["name"])))
    else:
        sys.exit("Error: No matching items found on "+ host_name)
 else:

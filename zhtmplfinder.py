@@ -4,7 +4,7 @@
 # pyzabbix is needed, see https://github.com/lukecyca/pyzabbix
 #
 import argparse
-import ConfigParser
+import configparser
 import os
 import os.path
 import sys
@@ -16,15 +16,14 @@ def ConfigSectionMap(section):
     dict1 = {}
     options = Config.options(section)
     for option in options:
- 	try:
-		dict1[option] = Config.get(section, option)
-		if dict1[option] == -1:
-			DebugPrint("skip: %s" % option)
-	except:
-		print("exception on %s!" % option)
-		dict1[option] = None
+        try:
+            dict1[option] = Config.get(section, option)
+            if dict1[option] == -1:
+                DebugPrint("skip: %s" % option)
+        except:
+            print(("exception on %s!" % option))
+            dict1[option] = None
     return dict1
-
 
 # set default vars
 defconf = os.getenv("HOME") + "/.zbx.conf"
@@ -56,7 +55,7 @@ parser.add_argument('-e', '--extended', help='Return both templateid and templat
 args = parser.parse_args()
 
 # load config module
-Config = ConfigParser.ConfigParser()
+Config = configparser.ConfigParser()
 Config
 
 # if configuration argument is set, test the config file
@@ -126,17 +125,17 @@ if hosts:
     if templates:
       if args.extended:
          # print ids and names
-	 for template in templates:
-	   print(format(template["templateid"])+":"+format(template["host"]))
+         for template in templates:
+             print((format(template["templateid"])+":"+format(template["host"])))
       else:
         if args.numeric:
            # print template ids
-	   for template in templates:
-	     print(format(template["templateid"]))
+           for template in templates:
+             print((format(template["templateid"])))
         else:
            # print template names
-	   for template in templates:
-	     print(format(template["host"]))
+           for template in templates:
+               print((format(template["host"])))
     else:
        sys.exit("Error: No templates linked to "+ host_name)
 else:

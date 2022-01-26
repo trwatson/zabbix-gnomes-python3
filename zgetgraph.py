@@ -7,14 +7,14 @@
 #
 #
 import argparse
-import ConfigParser
+import configparser
 import os
 import os.path
 import distutils.util
 import requests
 import time
 import sys
-from cStringIO import StringIO
+from io import StringIO
 from PIL import Image
 from pyzabbix import ZabbixAPI
 
@@ -23,15 +23,14 @@ def ConfigSectionMap(section):
     dict1 = {}
     options = Config.options(section)
     for option in options:
- 	try:
-		dict1[option] = Config.get(section, option)
-		if dict1[option] == -1:
-			DebugPrint("skip: %s" % option)
-	except:
-		print("exception on %s!" % option)
-		dict1[option] = None
+        try:
+            dict1[option] = Config.get(section, option)
+            if dict1[option] == -1:
+                DebugPrint("skip: %s" % option)
+        except:
+            print(("exception on %s!" % option))
+            dict1[option] = None
     return dict1
-
 
 # set default vars
 try:
@@ -69,7 +68,7 @@ parser.add_argument('-H', '--height', type=int, help='Height of the graph (defau
 args = parser.parse_args()
 
 # load config module
-Config = ConfigParser.ConfigParser()
+Config = configparser.ConfigParser()
 Config
 
 # if configuration argument is set, test the config file

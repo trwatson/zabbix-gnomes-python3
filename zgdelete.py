@@ -4,7 +4,7 @@
 # pyzabbix is needed, see https://github.com/lukecyca/pyzabbix
 #
 import argparse
-import ConfigParser
+import configparser
 import os
 import os.path
 import distutils.util
@@ -19,15 +19,14 @@ def ConfigSectionMap(section):
     dict1 = {}
     options = Config.options(section)
     for option in options:
- 	try:
-		dict1[option] = Config.get(section, option)
-		if dict1[option] == -1:
-			DebugPrint("skip: %s" % option)
-	except:
-		print("exception on %s!" % option)
-		dict1[option] = None
+        try:
+            dict1[option] = Config.get(section, option)
+            if dict1[option] == -1:
+                DebugPrint("skip: %s" % option)
+        except:
+            print(("exception on %s!" % option))
+            dict1[option] = None
     return dict1
-
 
 # set default vars
 defconf = os.getenv("HOME") + "/.zbx.conf"
@@ -58,7 +57,7 @@ parser.add_argument('-c','--config', help='Config file location (defaults to $HO
 args = parser.parse_args()
 
 # load config module
-Config = ConfigParser.ConfigParser()
+Config = configparser.ConfigParser()
 Config
 
 # if configuration argument is set, test the config file
@@ -113,7 +112,7 @@ if noverify is True:
  zapi.session.verify = False
 
 # Login to the Zabbix API
-print("Logging in on '" + api + "' with user '" + username +"'.")
+print(("Logging in on '" + api + "' with user '" + username +"'."))
 zapi.login(username, password)
 
 ##################################

@@ -4,7 +4,7 @@
 # pyzabbix is needed, see https://github.com/lukecyca/pyzabbix
 #
 import argparse
-import ConfigParser
+import configparser
 import os
 import os.path
 import sys
@@ -19,12 +19,11 @@ def ConfigSectionMap(section):
         try:
             dict1[option] = Config.get(section, option)
             if dict1[option] == -1:
-                    DebugPrint("skip: %s" % option)
+                DebugPrint("skip: %s" % option)
         except:
-            print("exception on %s!" % option)
+            print(("exception on %s!" % option))
             dict1[option] = None
     return dict1
-
 
 # set default vars
 defconf = os.getenv("HOME") + "/.zbx.conf"
@@ -68,7 +67,7 @@ group4.add_argument('-r', '--remove-groups', help='Remove host from hostgroups',
 args = parser.parse_args()
 
 # load config module
-Config = ConfigParser.ConfigParser()
+Config = configparser.ConfigParser()
 Config
 
 # if configuration argument is set, test the config file
@@ -174,10 +173,10 @@ if host_name:
                              field=field.split('=')
                              if ':' in field[0]:
                                    # context-macro contains ':', only uppercase macro name
-                                   name=unicode("{$" + field[0].split(':')[0].upper() + ':' + field[0].split(':')[1] + "}")
+                                   name=str("{$" + field[0].split(':')[0].upper() + ':' + field[0].split(':')[1] + "}")
                              else:
-                                   name=unicode("{$" + field[0].upper() + "}")
-                             value=unicode(field[1])
+                                   name=str("{$" + field[0].upper() + "}")
+                             value=str(field[1])
                              macro={"macro":name,"value":value}
                              zbxmac.append(macro)
                       else:
@@ -196,7 +195,7 @@ if host_name:
               # Create a list of macros to be removed
               for field in args.remove_macros:
                       # find macro name
-                      name=unicode("{$" + field.upper() + "}")
+                      name=str("{$" + field.upper() + "}")
                       macro={"macro":name}
                       remmac.append(macro)
 
@@ -229,14 +228,14 @@ if host_name:
                       getgroup=zapi.hostgroup.get(filter={'name':field})
                       if getgroup:
                               groupid=getgroup[0]['groupid']
-                              group={u'name':unicode(field), u'groupid':groupid}
+                              group={'name':str(field), 'groupid':groupid}
                               zbxgrp.append(group)
                       else:
                               sys.exit("Error: Could not find hostgroup \""+ field + "\"")
 
               # Itterate over the current groups and append them to the list, unless we just added an updated value
               for line in curgrp:
-                      group={u"name":line['name'],u"groupid":line['groupid']}
+                      group={"name":line['name'],"groupid":line['groupid']}
                       if group not in zbxgrp: 
                              zbxgrp.append(group)
 
@@ -245,21 +244,21 @@ if host_name:
               remgrp=[]
               # Create a list of groups to be removed
               for field in args.remove_groups:
-                      name=unicode(field)
-                      group={u'name':name}
+                      name=str(field)
+                      group={'name':name}
                       remgrp.append(group)
 
               # itterate over the current groups and append them to the list, unless the group is listed in the groups to be removed
               for line in curgrp:
                       name=line['name']
                       groupid=line['groupid']
-                      group={u"name":name,u"groupid":groupid}
+                      group={"name":name,"groupid":groupid}
                       if not any(check.get('name', None) == name for check in remgrp): 
                               zbxgrp.append(group)
 
       # Add groups to the API call if defined
       try:
-    	     if zbxgrp:
+            if zbxgrp:
                       call["groups"]=zbxgrp 
       except:
              pass

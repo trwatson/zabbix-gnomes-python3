@@ -4,7 +4,7 @@
 # pyzabbix is needed, see https://github.com/lukecyca/pyzabbix
 #
 import argparse
-import ConfigParser
+import configparser
 import os
 import os.path
 import sys
@@ -18,13 +18,13 @@ def ConfigSectionMap(section):
     dict1 = {}
     options = Config.options(section)
     for option in options:
- 	try:
-		dict1[option] = Config.get(section, option)
-		if dict1[option] == -1:
-			DebugPrint("skip: %s" % option)
-	except:
-		print("exception on %s!" % option)
-		dict1[option] = None
+        try:
+            dict1[option] = Config.get(section, option)
+            if dict1[option] == -1:
+                DebugPrint("skip: %s" % option)
+        except:
+            print(("exception on %s!" % option))
+            dict1[option] = None
     return dict1
 
 # conversion of timestamp
@@ -128,7 +128,7 @@ def get_terminal_width(fd=1):
 def blockprint(prefix,message):
     preferredWidth=get_terminal_width()
     wrapper = textwrap.TextWrapper(initial_indent=prefix, width=preferredWidth,subsequent_indent=' '*len(prefix))
-    print wrapper.fill(message)
+    print(wrapper.fill(message))
 
 # set default vars
 try:
@@ -167,7 +167,7 @@ parser.add_argument('-c','--config', help='Config file location (defaults to $HO
 args = parser.parse_args()
 
 # load config module
-Config = ConfigParser.ConfigParser()
+Config = configparser.ConfigParser()
 Config
 
 # if configuration argument is set, test the config file
@@ -257,14 +257,14 @@ if events:
                             acknowledged="Ack: Yes"
                     else:
                             acknowledged="Ack: No"
-                    print "%s %s: %s [%s] %s [%s](%s|%s)" % (time, hostname, state, eventid, trigger, triggerid, severity, acknowledged)
+                    print("%s %s: %s [%s] %s [%s](%s|%s)" % (time, hostname, state, eventid, trigger, triggerid, severity, acknowledged))
                 else:
                     if acked==True:
                         acknowledged='Acknowledged'
                     else:
                         acknowledged='Not Acknowledged'
 
-                    print "== EVENT [%s] ==\n" % (eventid)
+                    print("== EVENT [%s] ==\n" % (eventid))
                     blockprint("  Status   : ",state)
                     blockprint("  Severity : ",severity)
                     blockprint("  Time     : ",time)
@@ -272,33 +272,33 @@ if events:
                     blockprint("  Trigger  : ",trigger)
                     blockprint("  TriggerID: ",triggerid)
                     blockprint("  Ack'ed   : ",acknowledged)
-                    print
+                    print()
 
                     if args.comments:
                         comments=triggers[event['objectid']]['comments']
                         if len(comments)==0:
                            comments="N/A"
                         blockprint("  Comments : ",comments)
-                        print
+                        print()
 
                     if args.acks:
-                        print "  -- Acknowledges --"
+                        print("  -- Acknowledges --")
                         acks=event['acknowledges']
                         if len(acks)>0:
                                 for ack in acks:
-                                        print ack
+                                        print(ack)
                                         user=ack['name'] + " " + ack['surname'] + " (" + ack['alias'] + ")"
                                         blockprint("  Time     : ",timestr(ack['clock']))
                                         blockprint("  AckID    : ",ack['acknowledgeid'])
                                         blockprint("  User     : ",user)
                                         blockprint("  Message  : ",ack['message'])
                                                                 
-                                        print
+                                        print()
                         else:
-                                print "  N/A\n"
+                                print("  N/A\n")
 
                     if args.alerts:
-                        print "  -- Alert Actions --"
+                        print("  -- Alert Actions --")
                         alerts=event['alerts']
                         if len(alerts)>0:
                                 for alert in alerts:
@@ -311,9 +311,9 @@ if events:
                                                blockprint("  Sent to  : ",alert['sendto'])
                                                blockprint("  Subject  : ",alert['subject'])
                                                blockprint("  Message  : ",alert['message'])
-                                        print
+                                        print()
                         else:
-                                print "  N/A\n"
+                                print("  N/A\n")
 else:
         sys.exit("Error: No events found.")
                         

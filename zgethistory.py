@@ -7,14 +7,14 @@
 #
 #
 import argparse
-import ConfigParser
+import configparser
 import os
 import os.path
 import distutils.util
 import requests
 import time
 import sys
-from cStringIO import StringIO
+from io import StringIO
 from PIL import Image
 from pyzabbix import ZabbixAPI
 
@@ -23,15 +23,14 @@ def ConfigSectionMap(section):
     dict1 = {}
     options = Config.options(section)
     for option in options:
- 	try:
-		dict1[option] = Config.get(section, option)
-		if dict1[option] == -1:
-			DebugPrint("skip: %s" % option)
-	except:
-		print("exception on %s!" % option)
-		dict1[option] = None
+        try:
+            dict1[option] = Config.get(section, option)
+            if dict1[option] == -1:
+                DebugPrint("skip: %s" % option)
+        except:
+            print(("exception on %s!" % option))
+            dict1[option] = None
     return dict1
-
 
 # set default vars
 defconf = os.getenv("HOME") + "/.zbx.conf"
@@ -65,7 +64,7 @@ parser.add_argument('-e', '--extended', help='Returns timestamps (Unixtime in na
 args = parser.parse_args()
 
 # load config module
-Config = ConfigParser.ConfigParser()
+Config = configparser.ConfigParser()
 Config
 
 # if configuration argument is set, test the config file
@@ -163,10 +162,10 @@ if item:
   if itemhist:
     if args.extended:
       for record in itemhist:
-        print(format(record['clock'])+"."+format(record['ns'])+":"+format(unit)+":"+format(record["value"]))
+        print((format(record['clock'])+"."+format(record['ns'])+":"+format(unit)+":"+format(record["value"])))
     else:
       for record in itemhist:
-        print(format(record["value"]))
+        print((format(record["value"])))
   else:
     sys.exit("Error: No values returned for itemid " + itemid)
 else:
